@@ -44,25 +44,6 @@ object AkkaJSBuild extends Build {
     base = file("akka-websocket-bridge")
   ) dependsOn(akkaWebsocketCommon)
 
-  lazy val playApp = Project(
-    id = "play-app",
-    base = file("examples/play-app")
-  ) dependsOn(akkaWebsocketBridge, akkaWebsocketCommon)
-
-  lazy val playAppScalaJS = project.in(file("examples/play-app/scalajs"))
-    .dependsOn(akkaActorJS, akkaWebsocketJS)
-    .settings(
-        unmanagedSourceDirectories in Compile +=
-          (baseDirectory in playApp).value / "cscommon"
-    )
-    .settings(
-        Seq(fastOptJS, fullOptJS) map {
-          packageJSKey =>
-            crossTarget in (Compile, packageJSKey) :=
-              (baseDirectory in playApp).value / "public/javascripts"
-        }: _*
-    )
-
   override lazy val settings =
     super.settings ++
     buildSettings
